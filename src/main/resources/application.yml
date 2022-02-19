@@ -1,0 +1,10 @@
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/avp?characterEncoding=utf8&useSSL=true
+        username: root
+        password: rootroot
+    jackson:
+        time-zone: GMT+8
+mybatis:
+    mapper-locations: classpath:mapper/*.xml
