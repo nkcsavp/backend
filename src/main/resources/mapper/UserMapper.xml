@@ -9,4 +9,8 @@
     <insert id="addUser" parameterType="nkcs.avp.backend.domain.User">
         insert into `User` value(NULL,#{mail},#{pwd});
     </insert>
+    <update id="updatePwd" parameterType="nkcs.avp.backend.domain.User">
+        update `User` set `pwd` = #{pwd}
+        where `id` = #{id}
+    </update>
 </mapper>

@@ -3,11 +3,10 @@ package nkcs.avp.backend.controller;
 import nkcs.avp.backend.domain.Task;
 import nkcs.avp.backend.domain.User;
 import nkcs.avp.backend.service.TaskService;
+import nkcs.avp.backend.service.UserService;
+import nkcs.avp.backend.util.EncryptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,10 +16,16 @@ import java.util.ArrayList;
 @RequestMapping("/info")
 public class InfoController {
     TaskService taskService;
+    UserService userService;
 
     @Autowired
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/tasks")
@@ -29,6 +34,20 @@ public class InfoController {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         return taskService.getAllTaskById(user.getId());
+    }
+
+    @PostMapping("/updatepwd")
+    String updatePwd(@RequestParam String pwd, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if (pwd.length() >= 6 && pwd.length() <= 16) {
+            pwd = pwd + user.getMail();
+            pwd = EncryptionUtil.getResult(pwd);
+            user.setPwd(pwd);
+            userService.updatePwd(user);
+            return "[INFO]Success";
+        }
+        return "[ERROR]Password Length Should be in 6~16";
     }
 
 }

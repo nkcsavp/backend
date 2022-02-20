@@ -66,6 +66,20 @@ Backend of Algorithm Visualization Platform.
     "code": "..."}]
   ```
 
+* 更新密码(需登陆)
+
+  * 地址`/info/updatepwd`
+
+  * 参数
+
+    * `pwd`新密码
+
+  * 返回值
+
+    | `[ERROR]Password Length Should be in 6~16` | 不满足密码长度限制 |
+    | ------------------------------------------ | ------------------ |
+    | `[INFO]Success`                            | 注册成功           |
+
 ### 代码提交与运行接口(需登陆)
 
 * 地址

@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper {
     User getUserByName(String name);
     int addUser(User user);
-    int updateStatus(User user);
+    int updatePwd(User user);
 }
