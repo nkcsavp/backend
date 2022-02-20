@@ -1,0 +1,20 @@
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://avp_mysql:3306/avp?characterEncoding=utf8&useSSL=true
+        username: avp
+        password: avp
+    jackson:
+        time-zone: GMT+8
+    mail:
+        host: smtp.qq.com
+        username: verifycode_nicer@qq.com
+        password:
+        default-encoding: utf-8
+        port: 465
+        properties:
+            mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+mybatis:
+    mapper-locations: classpath:mapper/*.xml
+swagger:
+    enable: false

@@ -1,18 +1,3 @@
 spring:
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/avp?characterEncoding=utf8&useSSL=true
-        username: root
-        password: rootroot
-    jackson:
-        time-zone: GMT+8
-    mail:
-        host: smtp.qq.com
-        username:
-        password:
-        default-encoding: utf-8
-        port: 465
-        properties:
-            mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
-mybatis:
-    mapper-locations: classpath:mapper/*.xml
+    profiles:
+        active: pro
