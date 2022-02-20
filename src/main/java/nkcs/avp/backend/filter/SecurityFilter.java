@@ -6,6 +6,7 @@ import nkcs.avp.backend.util.SessionUtil;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
@@ -16,11 +17,19 @@ public class SecurityFilter implements Filter {
         HttpSession session = ((HttpServletRequest)servletRequest).getSession();
         User user = (User) session.getAttribute("user");
         if(user == null) {
-            servletResponse.getWriter().write("[ERROR]Need Log In");
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write("{\"code\":\"403\",\"msg\":\"Need Log In\"}");
+            response.setStatus(403);
+            response.getWriter().flush();
             return;
         }
         if(!SessionUtil.sessionSave.get(user.getMail()).equals(session.getId())) {
-            servletResponse.getWriter().write("[ERROR]Your Account has Signed On the Other Device");
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write("{\"code\":\"403\",\"msg\":\"Your Account has Signed On Other Devices\"}");
+            response.setStatus(403);
+            response.getWriter().flush();
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);

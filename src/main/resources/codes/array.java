@@ -4,9 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Main{
-    private static String ret = "{\n" +
-            "    \"ops\":[$(ops)]\n" +
-            "}";
+    private static String ret = "$(ops)";
     public static void main(String[] args) {
         $(code)
         Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -25,14 +23,14 @@ class DataList {
         arr = Arrays.asList($(sample));
     }
     public Integer get(int idx) {
-        operations.add("\"get" + "(" + idx + ")\"");
+        operations.add("get" + "(" + idx + ")");
         return arr.get(idx);
     }
     public void swap(int idx1, int idx2) {
         int temp = arr.get(idx1);
         arr.set(idx1, arr.get(idx2));
         arr.set(idx2, temp);
-        operations.add("\"swap" + "(" + idx1 + "," + idx2 + ")\"");
+        operations.add("swap" + "(" + idx1 + "," + idx2 + ")");
     }
     public int size() {
         return arr.size();

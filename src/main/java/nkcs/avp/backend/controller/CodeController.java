@@ -6,7 +6,9 @@ import nkcs.avp.backend.domain.Task;
 import nkcs.avp.backend.domain.User;
 import nkcs.avp.backend.service.TaskService;
 import nkcs.avp.backend.util.CodeUtil;
+import nkcs.avp.backend.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,24 +38,24 @@ public class CodeController {
     }
 
     @PostMapping("/submit")
-    String submitCode(@RequestParam String code, @RequestParam String sample, @RequestParam String mode, @RequestParam String lang, HttpServletRequest request){
+    ResponseEntity<String> submitCode(@RequestParam String code, @RequestParam String sample, @RequestParam String mode, @RequestParam String lang, HttpServletRequest request){
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
         if(!modes.contains(mode)){
-            return "[ERROR]Mode Parameter not Supported.";
+            return ResponseUtil.Response(400,"Mode Parameter not Supported");
         }
 
         if(!langs.contains(lang)){
-            return "[ERROR]Lang Parameter not Supported.";
+            return ResponseUtil.Response(400,"Lang Parameter not Supported");
         }
 
         if(!sample.matches("([0-9]+,)*([0-9]+)")){
-            return "[ERROR]Wrong Sample Format.";
+            return ResponseUtil.Response(400,"Wrong Sample Format");
         }
 
         if(code.length() > 40000){
-            return "[ERROR]Code is Too Long.";
+            return ResponseUtil.Response(400,"Code is Too Long");
         }
 
         Task task = new Task(user.getId(),sample,code,lang,mode);
@@ -79,12 +81,12 @@ public class CodeController {
         if(animation == null){
             task.setStatus(2);
             taskService.updateTask(task);
-            return "ERR";
+            return ResponseUtil.Response(400,"Code Run Error");
         }else{
             task.setAnimation(animation);
             task.setStatus(1);
             taskService.updateTask(task);
         }
-        return animation;
+        return ResponseUtil.Response(animation);
     }
 }

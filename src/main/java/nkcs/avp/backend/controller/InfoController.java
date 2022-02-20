@@ -5,7 +5,9 @@ import nkcs.avp.backend.domain.User;
 import nkcs.avp.backend.service.TaskService;
 import nkcs.avp.backend.service.UserService;
 import nkcs.avp.backend.util.EncryptionUtil;
+import nkcs.avp.backend.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +39,7 @@ public class InfoController {
     }
 
     @PostMapping("/updatepwd")
-    String updatePwd(@RequestParam String pwd, HttpServletRequest request){
+    ResponseEntity<String> updatePwd(@RequestParam String pwd, HttpServletRequest request){
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if (pwd.length() >= 6 && pwd.length() <= 16) {
@@ -45,9 +47,9 @@ public class InfoController {
             pwd = EncryptionUtil.getResult(pwd);
             user.setPwd(pwd);
             userService.updatePwd(user);
-            return "[INFO]Success";
+            return ResponseUtil.Response("Password Update Successfully");
         }
-        return "[ERROR]Password Length Should be in 6~16";
+        return ResponseUtil.Response(400,"Password Length Should be in 6~16");
     }
 
 }

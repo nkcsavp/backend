@@ -2,9 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main{
-    private static String ret = "{\n" +
-            "    \"ops\":[$(ops)]\n" +
-            "}";
+    private static String ret = "$(ops)";
     public static void main(String[] args) {
         $(code)
         Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -55,7 +53,7 @@ class BinaryTree {
         Integer temp = node1.value;
         node1.value = node2.value;
         node2.value = temp;
-        operations.add("\"swap("+node1.position+","+node2.position+")\"");
+        operations.add("swap("+node1.position+","+node2.position+")");
     }
 }
 
@@ -77,29 +75,29 @@ class BinaryTreeNode {
         this.position = 1;
     }
     public Integer getValue() {
-        BinaryTree.operations.add("\"get(" + this.position + ")\"");
+        BinaryTree.operations.add("get(" + this.position + ")");
         return value;
     }
     public void insertLeft(Integer value){
         this.left = new BinaryTreeNode(value);
         this.left.father = this;
         this.left.position = this.position * 2 + 1;
-        BinaryTree.operations.add("\"insert(" + this.left.position + "," + value + ")\"");
+        BinaryTree.operations.add("insert(" + this.left.position + "," + value + ")");
     }
     public void insertRight(Integer value){
         this.right = new BinaryTreeNode(value);
         this.right.father = this;
         this.right.position = this.position * 2 + 2;
-        BinaryTree.operations.add("\"insert(" + this.right.position + "," + value + ")\"");
+        BinaryTree.operations.add("insert(" + this.right.position + "," + value + ")");
     }
     public void removeLeft(){
         Integer removePosition = this.left.position;
         this.left = null;
-        BinaryTree.operations.add("\"remove("+removePosition+")\"");
+        BinaryTree.operations.add("remove("+removePosition+")");
     }
     public void removeRight(){
         Integer removePosition = this.right.position;
         this.right = null;
-        BinaryTree.operations.add("\"remove("+removePosition+")\"");
+        BinaryTree.operations.add("remove("+removePosition+")");
     }
 }
