@@ -5,7 +5,6 @@ import djudger.entity.LangEnum;
 import nkcs.avp.backend.domain.Task;
 import nkcs.avp.backend.domain.User;
 import nkcs.avp.backend.service.TaskService;
-import nkcs.avp.backend.service.UserService;
 import nkcs.avp.backend.util.CodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -41,9 +38,7 @@ public class CodeController {
     @PostMapping("/submit")
     String submitCode(@RequestParam String code, @RequestParam String sample, @RequestParam String mode, @RequestParam String lang, HttpServletRequest request){
         HttpSession session = request.getSession();
-
         User user = (User) session.getAttribute("user");
-        if(user == null) return "[ERROR]Need Login";
 
         if(!modes.contains(mode)){
             return "[ERROR]Mode Parameter not Supported.";

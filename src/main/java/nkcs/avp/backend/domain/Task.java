@@ -2,6 +2,7 @@ package nkcs.avp.backend.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.sql.Timestamp;
@@ -16,6 +17,7 @@ import java.util.Date;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class Task {
   private long uid;

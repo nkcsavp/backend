@@ -5,6 +5,7 @@ import nkcs.avp.backend.domain.User;
 import nkcs.avp.backend.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 @RestController
+@RequestMapping("/info")
 public class InfoController {
     TaskService taskService;
 
@@ -21,12 +23,11 @@ public class InfoController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/info/tasks")
+    @GetMapping("/tasks")
     @ResponseBody
     ArrayList<Task> getAllTask(HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        if (user == null) return null;
         return taskService.getAllTaskById(user.getId());
     }
 
