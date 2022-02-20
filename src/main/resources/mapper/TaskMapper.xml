@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="nkcs.avp.backend.mapper.TaskMapper">
     <insert id="addTask" parameterType="nkcs.avp.backend.domain.Task">
-        insert into `Task` value(#{uid},#{time},0,#{animation},#{sample},#{lang},#{mode},#{sid});
+        insert into `Task` value(#{identifier},#{uid},#{status},#{time},#{code},#{mode},#{sample},#{lang},#{animation});
     </insert>
     <update id="updateTask" parameterType="nkcs.avp.backend.domain.Task">
-        update `Task` set `status` = #{status}, `sid` = #{sid}, `animation` = #{animation}
-        where `uid` = ${uid} and `time` = #{time}
+        update `Task` set `status` = #{status}, `animation` = #{animation}
+        where `identifier` = #{identifier}
     </update>
     <select id="getAllTaskById" parameterType="long" resultType="nkcs.avp.backend.domain.Task">
         select * from `Task` where `uid` = #{uid}

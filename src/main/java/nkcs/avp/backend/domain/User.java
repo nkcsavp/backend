@@ -9,12 +9,11 @@ import lombok.ToString;
 @ToString
 public class User {
   private long id;
-  private String name;
+  private String mail;
   private String pwd;
-  private boolean operating;
 
-  public User(String name, String pwd) {
-    this.name = name;
+  public User(String mail, String pwd) {
+    this.mail = mail;
     this.pwd = pwd;
   }
 }

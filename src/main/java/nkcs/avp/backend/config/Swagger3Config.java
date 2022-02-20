@@ -1,7 +1,4 @@
-package nkcs.avp.backend.config;/*
- *    高薪启蒙 csdn学院地址：https://edu.csdn.net/lecturer/1141?spm=1002.2001.3001.4144
- *    Array老师：https://edu.csdn.net/course/detail/29600
- */
+package nkcs.avp.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +28,7 @@ public class Swagger3Config implements WebMvcConfigurer {
 
     private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
-                .title("Test")
+                .title("Backend of AVP")
                 .version("1.0")
                 .build();
     }

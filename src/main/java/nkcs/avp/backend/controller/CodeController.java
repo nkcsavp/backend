@@ -2,11 +2,8 @@ package nkcs.avp.backend.controller;
 
 import djudger.Allocator;
 import djudger.entity.LangEnum;
-import io.swagger.annotations.Api;
-import nkcs.avp.backend.domain.Source;
 import nkcs.avp.backend.domain.Task;
 import nkcs.avp.backend.domain.User;
-import nkcs.avp.backend.service.SourceService;
 import nkcs.avp.backend.service.TaskService;
 import nkcs.avp.backend.service.UserService;
 import nkcs.avp.backend.util.CodeUtil;
@@ -19,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -30,22 +28,14 @@ public class CodeController {
     }
 
     private TaskService taskService;
-    private SourceService sourceService;
-    private UserService userService;
+
+    private static List<String> modes = Arrays.asList("tree","array");
+
+    private static List<String> langs = Arrays.asList("java");
 
     @Autowired
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
-    }
-
-    @Autowired
-    public void setSourceService(SourceService sourceService) {
-        this.sourceService = sourceService;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
     }
 
     @PostMapping("/submit")
@@ -53,14 +43,28 @@ public class CodeController {
         HttpSession session = request.getSession();
 
         User user = (User) session.getAttribute("user");
-        if(user == null) return "403";
+        if(user == null) return "[ERROR]Need Login";
 
-        Task task = new Task(user.getId(), new Timestamp(new Date().getTime()),lang,mode,sample);
-        String fileName = user.getId() + "_" + task.getTime().getTime();
-        Source source = new Source(code,fileName);
+        if(!modes.contains(mode)){
+            return "[ERROR]Mode Parameter not Supported.";
+        }
 
-        sourceService.addSource(source);
-        task.setSid(fileName);
+        if(!langs.contains(lang)){
+            return "[ERROR]Lang Parameter not Supported.";
+        }
+
+        if(!sample.matches("([0-9]+,)*([0-9]+)")){
+            return "[ERROR]Wrong Sample Format.";
+        }
+
+        if(code.length() > 40000){
+            return "[ERROR]Code is Too Long.";
+        }
+
+        Task task = new Task(user.getId(),sample,code,lang,mode);
+        String identifier = user.getId() + "_" + task.getTime().getTime();
+        task.setIdentifier(identifier);
+
         taskService.addTask(task);
 
         List<String> commands = new ArrayList<>();
@@ -75,15 +79,17 @@ public class CodeController {
             code = CodeUtil.tree.replace("$(code)",code).replace("$(sample)",sample);
         }
 
-        String animation = Allocator.runCode(LangEnum.Java, commands, fileName, code);
+        String animation = Allocator.runCode(LangEnum.Java, commands, identifier, code);
 
-        if(animation.equals("TLE")){
+        if(animation == null){
             task.setStatus(2);
+            taskService.updateTask(task);
+            return "ERR";
         }else{
             task.setAnimation(animation);
             task.setStatus(1);
+            taskService.updateTask(task);
         }
-        taskService.updateTask(task);
         return animation;
     }
 }

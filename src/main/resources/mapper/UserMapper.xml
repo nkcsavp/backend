@@ -4,12 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="nkcs.avp.backend.mapper.UserMapper">
     <select id="getUserByName" resultType="nkcs.avp.backend.domain.User" parameterType="string">
-        select * from `User` where name = #{name}
+        select * from `User` where mail = #{mail}
     </select>
     <insert id="addUser" parameterType="nkcs.avp.backend.domain.User">
-        insert into `User` value(NULL,#{name},#{pwd},0);
+        insert into `User` value(NULL,#{mail},#{pwd});
     </insert>
-    <update id="updateStatus" parameterType="nkcs.avp.backend.domain.User">
-        update `User` set operating = #{operating} where name = #{name};
-    </update>
 </mapper>
