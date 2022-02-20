@@ -76,17 +76,21 @@ public class CodeController {
             code = CodeUtil.tree.replace("$(code)",code).replace("$(sample)",sample);
         }
 
-        String animation = Allocator.runCode(LangEnum.Java, commands, identifier, code);
+        String[] result = Allocator.runCode(LangEnum.Java, commands, identifier, code);
 
-        if(animation == null){
+        if(result[0] == null){
             task.setStatus(2);
+            taskService.updateTask(task);
+            return ResponseUtil.Response(400,"Code Run Timeout");
+        }else if(result[1].trim().length() != 0){
+            task.setStatus(3);
             taskService.updateTask(task);
             return ResponseUtil.Response(400,"Code Run Error");
         }else{
-            task.setAnimation(animation);
+            task.setAnimation(result[0]);
             task.setStatus(1);
             taskService.updateTask(task);
         }
-        return ResponseUtil.Response(animation);
+        return ResponseUtil.Response(result[0]);
     }
 }
