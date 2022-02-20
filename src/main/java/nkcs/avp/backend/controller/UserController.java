@@ -3,6 +3,7 @@ package nkcs.avp.backend.controller;
 import nkcs.avp.backend.domain.User;
 import nkcs.avp.backend.service.UserService;
 import nkcs.avp.backend.util.EncryptionUtil;
+import nkcs.avp.backend.util.MailUtil;
 import nkcs.avp.backend.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,23 +13,44 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.Enumeration;
 
 @RestController
 public class UserController {
     private UserService userService;
+    private MailUtil mailUtil;
 
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
+    @Autowired
+    public void setMailUtil(MailUtil mailUtil) {
+        this.mailUtil = mailUtil;
+    }
+
     @GetMapping("/verify")
     Boolean verify(@RequestParam String mail, HttpServletRequest request) {
         HttpSession session = request.getSession();
+        Long now = new Date().getTime();
         if (mail.matches("^\\w+([-+.]\\w+)*@mail.nankai.edu.cn$") || mail.matches("^\\w+([-+.]\\w+)*@nankai.edu.cn$")) {
-            // Send mail and get verify code
-            String code = "12345";
+            if(session.getAttribute("last") == null){
+                session.setAttribute("last",now);
+            }
+            else{
+                Long last = (Long) session.getAttribute("last");
+                System.out.println(last);
+                System.out.println(now);
+                if(now - last < 60 * 1000){
+                    return false;
+                }
+                else {
+                    session.setAttribute("last",now);
+                }
+            }
+            String code = mailUtil.sendVerifyCode(mail);
             session.setAttribute("verify", code);
             session.setAttribute("mail", mail);
             return true;
