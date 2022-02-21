@@ -38,7 +38,7 @@ public class CodeController {
     }
 
     @PostMapping("/submit")
-    ResponseEntity<String> submitCode(@RequestBody String code, @RequestParam String mode, @RequestParam String lang, @RequestParam String sample, @RequestParam String relation, HttpServletRequest request){
+    ResponseEntity<String> submitCode(@RequestBody String code, @RequestParam String mode, @RequestParam String lang, @RequestParam String sample, String relation, HttpServletRequest request){
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 

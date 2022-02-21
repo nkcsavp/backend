@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:8-slim
 
 RUN rm -f /etc/localtime \
 && ln -sv /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
