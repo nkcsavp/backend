@@ -2,15 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main{
-    private static String ret = "$(ops)";
     public static void main(String[] args) {
         $(code)
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-                System.out.println(ret.replace("$(ops)",String.join(",",BinaryTree.operations)));
-            }
-        });
+        System.out.print(String.join(",",BinaryTree.operations));
+
     }
 }
 

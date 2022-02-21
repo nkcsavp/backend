@@ -4,15 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Main{
-    private static String ret = "$(ops)";
     public static void main(String[] args) {
         $(code)
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-                System.out.println(ret.replace("$(ops)",String.join(",",DataList.operations)));
-            }
-        });
+        System.out.print(String.join(",",DataList.operations));
     }
 }
 
@@ -22,17 +16,17 @@ class DataList {
     public DataList() {
         arr = Arrays.asList($(sample));
     }
-    public Integer get(int idx) {
+    public Integer get(Integer idx) {
         operations.add("get" + "(" + idx + ")");
         return arr.get(idx);
     }
-    public void swap(int idx1, int idx2) {
-        int temp = arr.get(idx1);
-        arr.set(idx1, arr.get(idx2));
-        arr.set(idx2, temp);
-        operations.add("swap" + "(" + idx1 + "," + idx2 + ")");
+    public void swap(Integer i, Integer j) {
+        int temp = arr.get(i);
+        arr.set(i, arr.get(j));
+        arr.set(j, temp);
+        operations.add("swap" + "(" + i + "," + j + ")");
     }
-    public int size() {
+    public Integer size() {
         return arr.size();
     }
 }

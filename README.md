@@ -72,35 +72,24 @@ Backend of Algorithm Visualization Platform.
   * `/submit`
   
 * 参数
-  * `code`代码
-  
-    仅提交`main(String[] args)`函数内部的代码。
-  
-    ```java
-    // Array
-    DataList data = new DataList();
-    data.swap(idx1,idx2);
-    data.get(idx);
-    data.size();
-    //Tree
-    BinaryTree bt = new BinaryTree();
-    BinaryTreeNode root = bt.getRoot();
-    root.left.insertLeft(1);
-    root.right.removeLeft();
-    bt.swap(root.left,root.right);
-    ```
-  
   * `sample`测试用例
-    
+  
     * 格式为:`1,2,3,4,5`
       * 对于`tree`，0和负数代表空结点
-    
+  
   * `mode`模式
-    
-    * `array` or `tree`
-    
+  
+    * `array` or `tree` or `graph`
+  
   * `lang`语言类型
-    
+  
     * `java` or `cpp` or `python `
-    * 目前只支持`Java`，`C++`与`Python`即将支持
+  
+  * `relation`关系矩阵(仅`graph`)
+  
+    二维矩阵转换为数组，格式和`sample`一致，但仅允许0和1出现。
+  
+* 请求体
+  
+  具体代码，尤其注意`Python`的格式问题
 
