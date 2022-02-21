@@ -70,12 +70,16 @@ public class CodeController {
 
         code = CodeUtil.codes.get(mode + "_" + lang).replace("$(code)",code).replace("$(sample)",sample);
 
-        if(mode.equals("graph")&&!relation.matches("([01],)*[01]")){
-            return ResponseUtil.Response(400,"Graph Relation Illegal");
+        if(mode.equals("graph")){
+            if(!relation.matches("([01],)*[01]")){
+                return ResponseUtil.Response(400,"Graph Relation Illegal");
+            }
+            else{
+                code = code.replace("$(relation)",relation);
+            }
         }
-        else{
-            code = code.replace("$(relation)",relation);
-        }
+
+
         LangEnum langEnum;
         if(lang.equals("java")){
             langEnum = LangEnum.Java;
