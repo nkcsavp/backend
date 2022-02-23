@@ -42,14 +42,11 @@ public class InfoController {
     ResponseEntity<String> updatePwd(@RequestParam String pwd, HttpServletRequest request){
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        if (pwd.length() >= 6 && pwd.length() <= 16) {
-            pwd = pwd + user.getMail();
-            pwd = EncryptionUtil.getResult(pwd);
-            user.setPwd(pwd);
-            userService.updatePwd(user);
-            return ResponseUtil.Response("Password Update Successfully");
-        }
-        return ResponseUtil.Response(400,"Password Length Should be in 6~16");
+        pwd = pwd + user.getMail();
+        pwd = EncryptionUtil.getResult(pwd);
+        user.setPwd(pwd);
+        userService.updatePwd(user);
+        return ResponseUtil.Response("Password Update Successfully");
     }
 
 }

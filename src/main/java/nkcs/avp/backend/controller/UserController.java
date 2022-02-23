@@ -91,18 +91,15 @@ public class UserController {
         if (!session.getAttribute("verify").equals(verify) || !session.getAttribute("mail").equals(mail)) {
             return ResponseUtil.Response(400,"Invalid Verify Code");
         }
-        if (pwd.length() >= 6 && pwd.length() <= 16) {
-            pwd = pwd + mail;
-            pwd = EncryptionUtil.getResult(pwd);
-            try {
-                userService.addUser(new User(mail, pwd));
-            } catch (Exception e) {
-                return ResponseUtil.Response(400,"Mail Address has been Used");
-            }
-            session.removeAttribute("mail");
-            session.removeAttribute("verify");
-            return ResponseUtil.Response("Register Successfully");
+        pwd = pwd + mail;
+        pwd = EncryptionUtil.getResult(pwd);
+        try {
+            userService.addUser(new User(mail, pwd));
+        } catch (Exception e) {
+            return ResponseUtil.Response(400,"Mail Address has been Used");
         }
-        return ResponseUtil.Response(400,"Password Length Should be in 6~16");
+        session.removeAttribute("mail");
+        session.removeAttribute("verify");
+        return ResponseUtil.Response("Register Successfully");
     }
 }
