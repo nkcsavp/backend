@@ -22,7 +22,7 @@ class DataList {
       for(int i = 0; i < operations.size(); i++){
           std::cout << operations[i];
           if(i != operations.size() - 1){
-              std::cout << ",";
+              std::cout << ":";
           }
       }
   }

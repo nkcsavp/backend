@@ -33,4 +33,4 @@ class Graph:
 
 
 $(code)
-print(",".join(Graph.operations),end="")
+print(":".join(Graph.operations),end="")

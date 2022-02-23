@@ -4,7 +4,7 @@ import java.util.Arrays;
 public class Main{
     public static void main(String[] args) {
         $(code)
-        System.out.print(String.join(",",BinaryTree.operations));
+        System.out.print(String.join(":",BinaryTree.operations));
 
     }
 }

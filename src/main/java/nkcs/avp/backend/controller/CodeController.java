@@ -58,10 +58,6 @@ public class CodeController {
             return ResponseUtil.Response(400,"Code is Too Long");
         }
 
-        if(mode.equals("graph")&&!relation.matches("([01],)*[01]")){
-            return ResponseUtil.Response(400,"Graph Relation Illegal");
-        }
-
         Task task = new Task(user.getId(),sample,code,lang,mode);
         String identifier = user.getId() + "_" + task.getTime().getTime();
         task.setIdentifier(identifier);

@@ -16,4 +16,4 @@ class DataList:
 
 
 $(code)
-print(",".join(DataList.operations),end="")
+print(":".join(DataList.operations),end="")

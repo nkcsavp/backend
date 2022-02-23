@@ -72,6 +72,6 @@ class BinaryTree:
 
 
 $(code)
-print(",".join(BinaryTree.operations),end="")
+print(":".join(BinaryTree.operations),end="")
 
 

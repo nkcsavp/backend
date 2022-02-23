@@ -6,7 +6,7 @@ import java.util.List;
 public class Main{
     public static void main(String[] args) {
         $(code)
-        System.out.print(String.join(",",DataList.operations));
+        System.out.print(String.join(":",DataList.operations));
     }
 }
 

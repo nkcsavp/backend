@@ -9,7 +9,7 @@ class Graph {
   std::vector<int> data = {$(sample)};
 
   Graph() {
-      std::vector<int> temp = {0, 0, 1, 0, 0, 0, 0, 0, 0};
+      std::vector<int> temp = {$(relation)};
       relation.resize(this->data.size());
       for (int i = 0; i < this->data.size(); i++) {
           relation[i].resize(data.size());
@@ -23,7 +23,7 @@ class Graph {
       for(int i = 0; i < operations.size(); i++){
           std::cout << operations[i];
           if(i != operations.size() - 1){
-              std::cout << ",";
+              std::cout << ":";
           }
       }
   }
