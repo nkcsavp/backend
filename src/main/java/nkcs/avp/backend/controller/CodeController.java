@@ -28,9 +28,9 @@ public class CodeController {
 
     private TaskService taskService;
 
-    private static List<String> modes = Arrays.asList("tree","array","graph");
+    private static List<String> modes = Arrays.asList("tree", "array", "graph");
 
-    private static List<String> langs = Arrays.asList("java","python","cpp");
+    private static List<String> langs = Arrays.asList("java", "python", "cpp");
 
     @Autowired
     public void setTaskService(TaskService taskService) {
@@ -38,69 +38,74 @@ public class CodeController {
     }
 
     @PostMapping("/submit")
-    ResponseEntity<String> submitCode(@RequestBody String code, @RequestParam String mode, @RequestParam String lang, @RequestParam String sample, String relation, HttpServletRequest request){
+    ResponseEntity<String> submitCode(@RequestBody String code, @RequestParam String mode, @RequestParam String lang, @RequestParam String sample, @RequestParam String tag, String relation, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        if(!modes.contains(mode)){
-            return ResponseUtil.Response(400,"Mode Parameter not Supported");
+        if (!modes.contains(mode)) {
+            return ResponseUtil.Response(400, "Mode Parameter not Supported");
         }
 
-        if(!langs.contains(lang)){
-            return ResponseUtil.Response(400,"Lang Parameter not Supported");
+        if (!langs.contains(lang)) {
+            return ResponseUtil.Response(400, "Lang Parameter not Supported");
         }
 
-        if(!sample.matches("([0-9]+,)*([0-9]+)")){
-            return ResponseUtil.Response(400,"Wrong Sample Format");
+        if (!sample.matches("([0-9]+,)*([0-9]+)")) {
+            return ResponseUtil.Response(400, "Wrong Sample Format");
         }
 
-        if(code.length() > 40000){
-            return ResponseUtil.Response(400,"Code is Too Long");
+        if (code.length() > 40000) {
+            return ResponseUtil.Response(400, "Code is Too Long");
         }
 
-        Task task = new Task(user.getId(),sample,code,lang,mode);
+        Task task = new Task(user.getId(), sample, code, lang, mode, tag);
         String identifier = user.getId() + "_" + task.getTime().getTime();
         task.setIdentifier(identifier);
 
         taskService.addTask(task);
 
-        code = CodeUtil.codes.get(mode + "_" + lang).replace("$(code)",code).replace("$(sample)",sample);
+        code = CodeUtil.codes.get(mode + "_" + lang).replace("$(code)", code).replace("$(sample)", sample);
 
-        if(mode.equals("graph")){
-            if(!relation.matches("([01],)*[01]")){
-                return ResponseUtil.Response(400,"Graph Relation Illegal");
-            }
-            else{
-                code = code.replace("$(relation)",relation);
+        if (mode.equals("graph")) {
+            if (relation == null || !relation.matches("([01],)*[01]")) {
+                return ResponseUtil.Response(400, "Graph Relation Illegal");
+            } else {
+                code = code.replace("$(relation)", relation);
             }
         }
-
 
         LangEnum langEnum;
-        if(lang.equals("java")){
+        if (lang.equals("java")) {
             langEnum = LangEnum.Java;
-        }
-        else if(lang.equals("python")){
+        } else if (lang.equals("python")) {
             langEnum = LangEnum.Python;
-        }
-        else {
+        } else {
             langEnum = LangEnum.CPP;
         }
 
-
         String[] result = Allocator.runCode(langEnum, CodeUtil.commands.get(lang), identifier, code);
 
-        if(result[0] == null){
+        String pattern = "(([\\w]+\\((([\\d]+,)*[\\d]+)*\\)):)*[\\w]+\\((([\\d]+,)*[\\d]+)*\\)";
+
+        if (result[0] == null) {
             task.setStatus(2);
             taskService.updateTask(task);
-            return ResponseUtil.Response(400,"Code Run Timeout");
-        }else if(result[1].trim().length() != 0){
+            return ResponseUtil.Response(400, "Code Run Timeout");
+        } else if (result[1].trim().length() != 0) {
             task.setStatus(3);
             taskService.updateTask(task);
-            return ResponseUtil.Response(400,"Code Run Error");
-        }else{
-            task.setAnimation(result[0]);
+            return ResponseUtil.Response(400, "Code Run Error");
+        } else if (result[0].length() == 0) {
+            task.setStatus(4);
+            taskService.updateTask(task);
+            return ResponseUtil.Response(400, "Empty Animation");
+        } else if (!result[0].matches(pattern)) {
+            task.setStatus(5);
+            taskService.updateTask(task);
+            return ResponseUtil.Response(400, "Wrong Content in stdout");
+        } else {
             task.setStatus(1);
+            task.setAnimation(result[0]);
             taskService.updateTask(task);
         }
         return ResponseUtil.Response(result[0]);

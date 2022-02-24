@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/info")
@@ -32,14 +34,30 @@ public class InfoController {
 
     @GetMapping("/tasks")
     @ResponseBody
-    ArrayList<Task> getAllTask(HttpServletRequest request) {
+    ArrayList<Task> getTask(String tag, String lang, String mode, Integer status, @RequestParam Integer start, @RequestParam Integer length, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        return taskService.getAllTaskById(user.getId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("uid", user.getId());
+        map.put("start", start);
+        map.put("length", length);
+        if (tag != null) map.put("tag", "%" + tag + "%");
+        if (lang != null) map.put("lang", lang);
+        if (mode != null) map.put("mode", mode);
+        if (status != null) map.put("status", status);
+        return taskService.selectCondition(map);
+    }
+
+    @GetMapping("/tasks/remove")
+    ResponseEntity<String> removeTask(@RequestParam String identifier) {
+        if (taskService.deleteById(identifier) == 1) {
+            return ResponseUtil.Response("Task Remove Successfully");
+        }
+        return ResponseUtil.Response(403, "Task Not Exist");
     }
 
     @PostMapping("/updatepwd")
-    ResponseEntity<String> updatePwd(@RequestParam String pwd, HttpServletRequest request){
+    ResponseEntity<String> updatePwd(@RequestParam String pwd, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         pwd = pwd + user.getMail();

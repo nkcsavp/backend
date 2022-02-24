@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -28,7 +29,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public ArrayList<Task> getAllTaskById(long uid) {
-        return taskMapper.getAllTaskById(uid);
+    public ArrayList<Task> selectCondition(Map<String, Object> map) {
+        return taskMapper.selectCondition(map);
+    }
+
+    @Override
+    public int deleteById(String identifier) {
+        return taskMapper.deleteById(identifier);
     }
 }

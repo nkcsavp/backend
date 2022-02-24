@@ -12,7 +12,10 @@ import java.util.Date;
   About Status:
    0 stands for Pending
    1 stands for Successful
-   2 stands for Error
+   2 stands for Timeout
+   3 stands for Error
+   4 stands for Empty
+   5 stands for Invalid
  */
 
 @Data
@@ -29,13 +32,15 @@ public class Task {
   private String lang;
   private String mode;
   private String animation;
+  private String tag;
 
-  public Task(long uid, String sample, String code, String lang, String mode) {
+  public Task(long uid, String sample, String code, String lang, String mode, String tag) {
     this.uid = uid;
     this.time = new Timestamp(new Date().getTime());
     this.sample = sample;
     this.code = code;
     this.lang = lang;
     this.mode = mode;
+    this.tag = tag;
   }
 }

@@ -4,13 +4,34 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="nkcs.avp.backend.mapper.TaskMapper">
     <insert id="addTask" parameterType="nkcs.avp.backend.domain.Task">
-        insert into `Task` value(#{identifier},#{uid},#{status},#{time},#{code},#{mode},#{sample},#{lang},#{animation});
+        insert into `Task` value(#{identifier},#{uid},#{status},#{time},#{code},#{mode},#{sample},#{lang},#{animation},#{tag});
     </insert>
     <update id="updateTask" parameterType="nkcs.avp.backend.domain.Task">
         update `Task` set `status` = #{status}, `animation` = #{animation}
         where `identifier` = #{identifier}
     </update>
-    <select id="getAllTaskById" parameterType="long" resultType="nkcs.avp.backend.domain.Task">
-        select * from `Task` where `uid` = #{uid}
+    <select id="selectCondition" parameterType="map" resultType="nkcs.avp.backend.domain.Task">
+        select * from `Task`
+        <where>
+            <if test="uid != null">
+                AND `uid` = #{uid}
+            </if>
+            <if test="tag != null">
+                AND `tag` like #{tag}
+            </if>
+            <if test="lang != null">
+                AND `lang` = #{lang}
+            </if>
+            <if test="mode != null">
+                AND `mode` = #{mode}
+            </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
+        </where>
+        order by `time` desc limit #{start},#{length}
     </select>
+    <delete id="deleteById" parameterType="string">
+        delete from `Task` where `identifier` = #{identifier}
+    </delete>
 </mapper>
