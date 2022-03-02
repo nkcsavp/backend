@@ -7,6 +7,7 @@ import nkcs.avp.backend.service.UserService;
 import nkcs.avp.backend.util.EncryptionUtil;
 import nkcs.avp.backend.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,8 @@ import java.util.Map;
 public class InfoController {
     TaskService taskService;
     UserService userService;
+
+    private static String key = "nkcsavp";
 
     @Autowired
     public void setTaskService(TaskService taskService) {
@@ -65,6 +68,36 @@ public class InfoController {
         user.setPwd(pwd);
         userService.updatePwd(user);
         return ResponseUtil.Response("Password Update Successfully");
+    }
+
+    @PostMapping("/tasks/share")
+    ResponseEntity<String> shareTask(@RequestParam String identifier, @RequestParam Boolean shared, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        Task task = taskService.getById(identifier);
+        if (task != null && task.getUid() == user.getId()) {
+            if(shared){
+                task.setShared(true);
+                taskService.updateTask(task);
+                return ResponseUtil.Response(EncryptionUtil.encodeTask(task.getIdentifier()));
+            }
+            else{
+                task.setShared(false);
+                taskService.updateTask(task);
+                return ResponseUtil.Response("Shared task withdraw");
+            }
+        }
+        return ResponseUtil.Response(403, "Task Not Exist");
+    }
+
+    @GetMapping("/tasks/share")
+    @ResponseBody
+    Task getShareTask(@RequestParam String identifier) {
+        Task task = taskService.getById(EncryptionUtil.decodeTask(identifier));
+        if (task != null && task.getShared()) {
+            return task;
+        }
+        return null;
     }
 
 }

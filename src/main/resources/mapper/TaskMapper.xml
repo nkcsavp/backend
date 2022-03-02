@@ -4,10 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="nkcs.avp.backend.mapper.TaskMapper">
     <insert id="addTask" parameterType="nkcs.avp.backend.domain.Task">
-        insert into `Task` value(#{identifier},#{uid},#{status},#{time},#{code},#{mode},#{sample},#{lang},#{animation},#{tag});
+        insert into `Task` value(#{identifier},#{uid},#{status},#{time},#{code},#{mode},#{sample},#{lang},#{animation},#{tag},#{shared});
     </insert>
     <update id="updateTask" parameterType="nkcs.avp.backend.domain.Task">
-        update `Task` set `status` = #{status}, `animation` = #{animation}
+        update `Task` set `status` = #{status}, `animation` = #{animation}, `shared` = #{shared}
         where `identifier` = #{identifier}
     </update>
     <select id="selectCondition" parameterType="map" resultType="nkcs.avp.backend.domain.Task">
@@ -34,4 +34,8 @@
     <delete id="deleteById" parameterType="string">
         delete from `Task` where `identifier` = #{identifier}
     </delete>
+    <select id="getById" parameterType="string" resultType="nkcs.avp.backend.domain.Task">
+        select * from `Task` where `identifier` = #{identifier}
+    </select>
+
 </mapper>

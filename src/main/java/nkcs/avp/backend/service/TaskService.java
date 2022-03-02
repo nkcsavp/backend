@@ -10,4 +10,5 @@ public interface TaskService {
     int updateTask(Task task);
     ArrayList<Task> selectCondition(Map<String,Object> map);
     int deleteById(String identifier);
+    Task getById(String identifier);
 }

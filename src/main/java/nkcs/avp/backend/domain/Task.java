@@ -33,6 +33,7 @@ public class Task {
   private String mode;
   private String animation;
   private String tag;
+  private Boolean shared;
 
   public Task(long uid, String sample, String code, String lang, String mode, String tag) {
     this.uid = uid;
@@ -42,5 +43,6 @@ public class Task {
     this.lang = lang;
     this.mode = mode;
     this.tag = tag;
+    this.shared = false;
   }
 }

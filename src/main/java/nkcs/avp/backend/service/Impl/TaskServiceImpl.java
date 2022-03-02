@@ -37,4 +37,9 @@ public class TaskServiceImpl implements TaskService {
     public int deleteById(String identifier) {
         return taskMapper.deleteById(identifier);
     }
+
+    @Override
+    public Task getById(String identifier) {
+        return taskMapper.getById(identifier);
+    }
 }
