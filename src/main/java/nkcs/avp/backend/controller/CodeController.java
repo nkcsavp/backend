@@ -58,23 +58,23 @@ public class CodeController {
             return ResponseUtil.Response(400, "Code is Too Long");
         }
 
+        String finalCode = CodeUtil.codes.get(mode + "_" + lang).replace("$(code)", code).replace("$(sample)", sample);
 
         if (mode.equals("graph")) {
             if (relation == null || !relation.matches("([01],)*[01]")) {
                 return ResponseUtil.Response(400, "Graph Relation Illegal");
             } else {
-                sample = sample + "&" + relation;
-                code = code.replace("$(relation)", relation);
+                finalCode = finalCode.replace("$(relation)", relation);
             }
         }
+
+        sample = sample + "&" + relation;
 
         Task task = new Task(user.getId(), sample, code, lang, mode, tag);
         String identifier = user.getId() + "_" + task.getTime().getTime();
         task.setIdentifier(identifier);
 
         taskService.addTask(task);
-
-        code = CodeUtil.codes.get(mode + "_" + lang).replace("$(code)", code).replace("$(sample)", sample);
 
         LangEnum langEnum;
         if (lang.equals("java")) {
@@ -85,7 +85,7 @@ public class CodeController {
             langEnum = LangEnum.CPP;
         }
 
-        String[] result = Allocator.runCode(langEnum, CodeUtil.commands.get(lang), identifier, code);
+        String[] result = Allocator.runCode(langEnum, CodeUtil.commands.get(lang), identifier, finalCode);
 
         String pattern = "(([\\w]+\\((([\\d]+,)*[\\d]+)*\\)):)*[\\w]+\\((([\\d]+,)*[\\d]+)*\\)";
 
