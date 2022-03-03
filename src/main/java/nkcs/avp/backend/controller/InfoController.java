@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/info")
 public class InfoController {
     TaskService taskService;
     UserService userService;
@@ -35,7 +34,7 @@ public class InfoController {
         this.userService = userService;
     }
 
-    @GetMapping("/tasks")
+    @GetMapping("/info/tasks")
     @ResponseBody
     ArrayList<Task> getTask(String tag, String lang, String mode, Integer status, @RequestParam Integer start, @RequestParam Integer length, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -51,7 +50,7 @@ public class InfoController {
         return taskService.selectCondition(map);
     }
 
-    @GetMapping("/tasks/remove")
+    @GetMapping("/info/tasks/remove")
     ResponseEntity<String> removeTask(@RequestParam String identifier) {
         if (taskService.deleteById(identifier) == 1) {
             return ResponseUtil.Response("Task Remove Successfully");
@@ -59,7 +58,7 @@ public class InfoController {
         return ResponseUtil.Response(403, "Task Not Exist");
     }
 
-    @PostMapping("/updatepwd")
+    @PostMapping("/info/updatepwd")
     ResponseEntity<String> updatePwd(@RequestParam String pwd, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -70,7 +69,7 @@ public class InfoController {
         return ResponseUtil.Response("Password Update Successfully");
     }
 
-    @PostMapping("/tasks/share")
+    @PostMapping("/info/tasks/share")
     ResponseEntity<String> shareTask(@RequestParam String identifier, @RequestParam Boolean shared, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -90,7 +89,7 @@ public class InfoController {
         return ResponseUtil.Response(403, "Task Not Exist");
     }
 
-    @GetMapping("/tasks/share")
+    @GetMapping("/share")
     @ResponseBody
     Task getShareTask(@RequestParam String identifier) {
         Task task = taskService.getById(EncryptionUtil.decodeTask(identifier));

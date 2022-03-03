@@ -65,10 +65,9 @@ public class CodeController {
                 return ResponseUtil.Response(400, "Graph Relation Illegal");
             } else {
                 finalCode = finalCode.replace("$(relation)", relation);
+                sample = sample + "&" + relation;
             }
         }
-
-        sample = sample + "&" + relation;
 
         Task task = new Task(user.getId(), sample, code, lang, mode, tag);
         String identifier = user.getId() + "_" + task.getTime().getTime();
