@@ -18,3 +18,8 @@ mybatis:
     mapper-locations: classpath:mapper/*.xml
 swagger:
     enable: false
+djudger:
+    docker-socket: unix:///var/run/docker.sock
+    code-path: /root/codes
+    seccomp: true
+    seccomp-path: /root/seccomp/default.json

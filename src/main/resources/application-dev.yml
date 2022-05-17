@@ -18,3 +18,8 @@ mybatis:
     mapper-locations: classpath:mapper/*.xml
 swagger:
     enable: true
+djudger:
+    docker-socket: tcp://127.0.0.1:2376
+    code-path: /Users/nicerwang/Code/judger-test
+    seccomp: false
+    seccomp-path: null

@@ -1,7 +1,8 @@
 package nkcs.avp.backend.controller;
 
-import djudger.Allocator;
-import djudger.entity.LangEnum;
+import djudger.DJudgerException;
+import djudger.StatusEnum;
+import djudger.allocator.Allocator;
 import nkcs.avp.backend.domain.Task;
 import nkcs.avp.backend.domain.User;
 import nkcs.avp.backend.service.TaskService;
@@ -18,15 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class CodeController {
 
-    static {
-        Allocator.init();
-    }
-
     private TaskService taskService;
+
+    private Allocator allocator;
 
     private static List<String> modes = Arrays.asList("tree", "array", "graph");
 
@@ -35,6 +35,11 @@ public class CodeController {
     @Autowired
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    @Autowired
+    public void setAllocator(Allocator allocator) {
+        this.allocator = allocator;
     }
 
     @PostMapping("/submit")
@@ -75,40 +80,36 @@ public class CodeController {
 
         taskService.addTask(task);
 
-        LangEnum langEnum;
-        if (lang.equals("java")) {
-            langEnum = LangEnum.Java;
-        } else if (lang.equals("python")) {
-            langEnum = LangEnum.Python;
-        } else {
-            langEnum = LangEnum.CPP;
+        djudger.Task result = null;
+        try {
+            result = allocator.runCode(lang.equals("python") ? "py" : lang, CodeUtil.commands.get(lang),2000, TimeUnit.MILLISECONDS, identifier, finalCode);
+        } catch (DJudgerException e) {
+            e.printStackTrace();
+            return ResponseUtil.Response(500, e.getMessage());
         }
-
-        String[] result = Allocator.runCode(langEnum, CodeUtil.commands.get(lang), identifier, finalCode);
 
         String pattern = "(([\\w]+\\((([\\d]+,)*[\\d]+)*\\)):)*[\\w]+\\((([\\d]+,)*[\\d]+)*\\)";
 
-        if (result[0] == null) {
+        StatusEnum status = result.getStatus();
+
+        if (status == StatusEnum.TIMEOUT) {
             task.setStatus(2);
-            taskService.updateTask(task);
             return ResponseUtil.Response(400, "Code Run Timeout");
-        } else if (result[1].trim().length() != 0) {
+        } else if (status == StatusEnum.ERROR || result.getStderr().trim().length() != 0) {
             task.setStatus(3);
-            taskService.updateTask(task);
             return ResponseUtil.Response(400, "Code Run Error");
-        } else if (result[0].length() == 0) {
+        } else if (result.getStdout().length() == 0) {
             task.setStatus(4);
-            taskService.updateTask(task);
             return ResponseUtil.Response(400, "Empty Animation");
-        } else if (!result[0].matches(pattern)) {
+        } else if (!result.getStdout().matches(pattern)) {
             task.setStatus(5);
-            taskService.updateTask(task);
             return ResponseUtil.Response(400, "Wrong Content in stdout");
         } else {
             task.setStatus(1);
-            task.setAnimation(result[0]);
-            taskService.updateTask(task);
+            task.setAnimation(result.getStdout());
         }
-        return ResponseUtil.Response(result[0]);
+        taskService.updateTask(task);
+
+        return ResponseUtil.Response(result.getStdout());
     }
 }
